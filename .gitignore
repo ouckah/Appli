@@ -106,3 +106,8 @@ target/
 # Playwright (optional)
 playwright-report/
 test-results/
+
+# Environmental Variables
+.env.*
+*.env
+.envrc
