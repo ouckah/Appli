@@ -33,6 +33,7 @@ def get_xpath(tag):
             return f"//*[@id='{tag.get('id')}']"
         elif tag.get("name"):
             return f"//*[@name='{tag.get('name')}']"
+    # fallback: tag type and position
     siblings = [s for s in tag.parent.find_all(tag.name)]
     index = siblings.index(tag) + 1
     return f"//{tag.name}[{index}]"
@@ -48,16 +49,14 @@ def get_css_text_selector(tag):
     return None
 
 
-def get_index_in_parent(tag):
-    siblings = [s for s in tag.parent.find_all(tag.name) if is_visible(s)]
-    return siblings.index(tag) if tag in siblings else 0
-
-
 # Main function to extract the semantic DOM
 def extract_semantic_dom(html: str):
     soup = BeautifulSoup(html, "html.parser")
 
-    inputs, buttons, selects, textareas = [], [], [], []
+    inputs = []
+    buttons = []
+    selects = []
+    textareas = []
 
     # ===== INPUTS =====
     for tag in soup.find_all("input"):
@@ -70,8 +69,7 @@ def extract_semantic_dom(html: str):
             "placeholder": tag.get("placeholder"),
             "label": find_label(tag, soup),
             "xpath": get_xpath(tag),
-            "css": get_css_text_selector(tag),
-            "index_in_parent": get_index_in_parent(tag)
+            "css": get_css_text_selector(tag)
         })
 
     # ===== BUTTONS =====
@@ -85,8 +83,7 @@ def extract_semantic_dom(html: str):
                 "id": tag.get("id"),
                 "role": tag.get("role") or "button",
                 "xpath": get_xpath(tag),
-                "css": get_css_text_selector(tag),
-                "index_in_parent": get_index_in_parent(tag)
+                "css": get_css_text_selector(tag)
             })
 
     # ===== TEXTAREAS =====
@@ -97,8 +94,7 @@ def extract_semantic_dom(html: str):
                 "name": tag.get("name"),
                 "label": find_label(tag, soup),
                 "xpath": get_xpath(tag),
-                "css": get_css_text_selector(tag),
-                "index_in_parent": get_index_in_parent(tag)
+                "css": get_css_text_selector(tag)
             })
 
     # ===== SELECTS =====
@@ -110,13 +106,12 @@ def extract_semantic_dom(html: str):
                 "options": options,
                 "label": find_label(tag, soup),
                 "xpath": get_xpath(tag),
-                "css": get_css_text_selector(tag),
-                "index_in_parent": get_index_in_parent(tag)
+                "css": get_css_text_selector(tag)
             })
 
     return {
         "inputs": inputs,
         "textareas": textareas,
         "selects": selects,
-        "buttons": buttons
+        "buttons": buttons,
     }
