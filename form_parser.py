@@ -16,14 +16,48 @@ def is_visible(tag):
     return tag.get("aria-hidden") != "true" and tag.get("aria-disabled") != "true"
 
 
+def get_xpath(tag):
+    """
+    Generates a simple XPath for the tag using its text content or position.
+    """
+    if tag.name == "button":
+        text = tag.get_text(strip=True)
+        if text:
+            return f"//button[text()='{text}']"
+    elif tag.name == "a":
+        text = tag.get_text(strip=True)
+        if text:
+            return f"//a[text()='{text}']"
+    elif tag.name in ["input", "textarea", "select"]:
+        if tag.get("id"):
+            return f"//*[@id='{tag.get('id')}']"
+        elif tag.get("name"):
+            return f"//*[@name='{tag.get('name')}']"
+    siblings = [s for s in tag.parent.find_all(tag.name)]
+    index = siblings.index(tag) + 1
+    return f"//{tag.name}[{index}]"
+
+
+def get_css_text_selector(tag):
+    """
+    Generates a Playwright-compatible CSS selector based on text content (best for buttons/links).
+    """
+    text = tag.get_text(strip=True)
+    if text:
+        return f"{tag.name}:has-text('{text}')"
+    return None
+
+
+def get_index_in_parent(tag):
+    siblings = [s for s in tag.parent.find_all(tag.name) if is_visible(s)]
+    return siblings.index(tag) if tag in siblings else 0
+
+
 # Main function to extract the semantic DOM
 def extract_semantic_dom(html: str):
     soup = BeautifulSoup(html, "html.parser")
 
-    inputs = []
-    buttons = []
-    selects = []
-    textareas = []
+    inputs, buttons, selects, textareas = [], [], [], []
 
     # ===== INPUTS =====
     for tag in soup.find_all("input"):
@@ -35,6 +69,9 @@ def extract_semantic_dom(html: str):
             "type": tag.get("type", "text"),
             "placeholder": tag.get("placeholder"),
             "label": find_label(tag, soup),
+            "xpath": get_xpath(tag),
+            "css": get_css_text_selector(tag),
+            "index_in_parent": get_index_in_parent(tag)
         })
 
     # ===== BUTTONS =====
@@ -42,11 +79,14 @@ def extract_semantic_dom(html: str):
         if not is_visible(tag):
             continue
         text = tag.get_text(strip=True)
-        if text:  # ignore empty
+        if text:
             buttons.append({
                 "text": text,
                 "id": tag.get("id"),
-                "role": tag.get("role") or "button"
+                "role": tag.get("role") or "button",
+                "xpath": get_xpath(tag),
+                "css": get_css_text_selector(tag),
+                "index_in_parent": get_index_in_parent(tag)
             })
 
     # ===== TEXTAREAS =====
@@ -56,6 +96,9 @@ def extract_semantic_dom(html: str):
                 "id": tag.get("id"),
                 "name": tag.get("name"),
                 "label": find_label(tag, soup),
+                "xpath": get_xpath(tag),
+                "css": get_css_text_selector(tag),
+                "index_in_parent": get_index_in_parent(tag)
             })
 
     # ===== SELECTS =====
@@ -66,11 +109,14 @@ def extract_semantic_dom(html: str):
                 "id": tag.get("id"),
                 "options": options,
                 "label": find_label(tag, soup),
+                "xpath": get_xpath(tag),
+                "css": get_css_text_selector(tag),
+                "index_in_parent": get_index_in_parent(tag)
             })
 
     return {
         "inputs": inputs,
         "textareas": textareas,
         "selects": selects,
-        "buttons": buttons,
+        "buttons": buttons
     }
