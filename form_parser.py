@@ -62,14 +62,32 @@ def extract_semantic_dom(html: str):
     for tag in soup.find_all("input"):
         if not is_visible(tag):
             continue
+        label_text = find_label(tag, soup)
+        field_name = tag.get("name")
+        label_selector = f"label:has-text('{label_text}')" if label_text else None
+        label_xpath = (
+            f"//label[normalize-space()='{label_text}']"
+            if label_text else None
+        )
+
+        relationship = None
+        if label_text and field_name:
+            relationship = (
+                f"{label_selector} >> .. >> [name='{field_name}']"
+                if label_selector else None
+            )
+
         inputs.append({
             "id": tag.get("id"),
-            "name": tag.get("name"),
+            "name": field_name,
             "type": tag.get("type", "text"),
             "placeholder": tag.get("placeholder"),
-            "label": find_label(tag, soup),
+            "label": label_text,
             "xpath": get_xpath(tag),
-            "css": get_css_text_selector(tag)
+            "css": get_css_text_selector(tag),
+            "label_selector": label_selector,
+            "label_xpath": label_xpath,
+            "label_to_input": relationship,
         })
 
     # ===== BUTTONS =====
