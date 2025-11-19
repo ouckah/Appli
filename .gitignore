@@ -111,3 +111,6 @@ test-results/
 .env.*
 *.env
 .envrc
+
+# Chrome Extensions
+extensions/
