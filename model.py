@@ -79,7 +79,7 @@ def generate_playwright_plan(dom_html: str, extra_context: Optional[str] = None)
         model="gpt-4.1",
         input=messages,
         temperature=0.2,
-        max_output_tokens=1200,
+        max_output_tokens=3000,
     )
     raw_output = response.output_text
     debug = os.getenv("APPLY_DEBUG_LLM_OUTPUT") == "1"
