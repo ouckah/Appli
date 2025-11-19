@@ -44,7 +44,18 @@ async def _handle_fill(page: Page, step: PlaywrightStep, wait_until: str):
     if step.value is None:
         raise PlanExecutionError("Fill step requires a 'value'.")
     locator = await _ensure_locator(page, step.selector or "")
-    await locator.fill(step.value)
+    
+    # Check if it's a number input - .fill() doesn't work on number inputs
+    input_type = await locator.get_attribute("type")
+    if input_type == "number":
+        # For number inputs, use evaluate to set the value directly
+        # This triggers change events properly
+        await locator.evaluate(
+            "(element, value) => { element.value = value; element.dispatchEvent(new Event('input', { bubbles: true })); element.dispatchEvent(new Event('change', { bubbles: true })); }",
+            str(step.value),
+        )
+    else:
+        await locator.fill(step.value)
 
 
 async def _handle_press(page: Page, step: PlaywrightStep, wait_until: str):
