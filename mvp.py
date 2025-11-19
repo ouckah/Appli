@@ -12,7 +12,6 @@ from plan_executor import execute_plan_on_page
 
 # ===== Configurable constants =====
 URL = "https://careers.point72.com/CSJobDetail?jobName=software-engineer-2026-grad&jobCode=IVS-0013868&location=New+York&locale=English&retURL=/CSCareerSearch&utm_campaign=google_jobs_apply&utm_source=google_jobs_apply&utm_medium=organic"
-HEADED = True
 WAIT_UNTIL = "load"
 EXTRA_CONTEXT = "Prioritize remote-friendly roles."
 EXECUTE_PLAN = True  # Set True to run the generated plan against a live page
@@ -101,7 +100,7 @@ async def main():
     if not URL:
         raise SystemExit("URL must be set to fetch the job page.")
 
-    async with launch_browser(headless=not HEADED) as browser:
+    async with launch_browser() as browser:
         context = await browser.new_context(ignore_https_errors=True)
         page = await context.new_page()
         await page.goto(URL, wait_until=WAIT_UNTIL)

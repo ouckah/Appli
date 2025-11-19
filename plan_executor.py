@@ -151,12 +151,11 @@ async def execute_plan(
     plan: PlaywrightPlan,
     *,
     start_url: Optional[str] = None,
-    headless: bool = True,
     wait_until: str = "networkidle",
     keep_browser_open: bool = False,
 ) -> None:
     """Spin up a browser, navigate if needed, and execute each plan step."""
-    async with launch_browser(headless=headless) as browser:
+    async with launch_browser() as browser:
         context = await browser.new_context()
         page = await context.new_page()
 
