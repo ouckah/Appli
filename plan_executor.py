@@ -72,7 +72,41 @@ async def _handle_select(page: Page, step: PlaywrightStep, wait_until: str):
     if step.value is None:
         raise PlanExecutionError("select_option step requires a 'value'.")
     locator = await _ensure_locator(page, step.selector or "")
-    await locator.select_option(step.value)
+    
+    # Try to determine if it's a native <select> or custom dropdown
+    tag_name = await locator.evaluate("(el) => el.tagName.toLowerCase()")
+    
+    if tag_name == "select":
+        # Native select - use select_option with value, label, or index
+        try:
+            await locator.select_option(step.value)
+            return
+        except Exception as e:
+            # If select_option fails, try matching by visible text
+            await locator.select_option(label=step.value)
+            return
+    else:
+        # Custom dropdown - click to open, then click the option
+        await locator.click()
+        await page.wait_for_timeout(200)  # Wait for dropdown to open
+        
+        # Try to find the option by text
+        option_selector = f"text={step.value}"
+        option_locator = page.locator(option_selector).first
+        count = await option_locator.count()
+        
+        if count > 0:
+            await option_locator.click()
+            return
+        
+        # Fallback: try finding in any visible dropdown/menu
+        option_locator = page.locator(f"[role='option']:has-text('{step.value}')").first
+        count = await option_locator.count()
+        if count > 0:
+            await option_locator.click()
+            return
+        
+        raise PlanExecutionError(f"Could not find option '{step.value}' in dropdown '{step.selector}'")
 
 
 async def _handle_check(page: Page, step: PlaywrightStep, wait_until: str):
