@@ -21,6 +21,27 @@ PRINT_SEMANTICS = True  # Dump the semantic DOM details each iteration
 PRINT_HTML = False  # Dump the raw HTML snapshot (careful: noisy!)
 UPLOAD_FIXTURE_PATH = Path("fixtures/dummy_resume.pdf").resolve()
 
+# ===== User information for job applications =====
+USER_INFO = {
+    "first_name": "John",
+    "last_name": "Doe",
+    "email": "john.doe@example.com",
+    "phone": "+1-555-555-5555",
+    "school": "Example University",
+    "degree": "Bachelor of Science in Computer Science",
+    "graduation_year": "2024",
+    "current_organization": "Current Company Inc.",
+    "linkedin_url": "https://linkedin.com/in/johndoe",
+    "github_url": "https://github.com/johndoe",
+    "portfolio_url": "https://johndoe.dev",
+    "preferred_name": "John",
+    "name_pronunciation": "JON doe",
+    "location": "Remote",
+    "work_authorization": "Authorized to work in the US",
+    "veteran_status": "I am not a protected veteran",
+    "disability_status": "No, I do not have a disability and have not had one in the past",
+}
+
 def _format_step(step: PlaywrightStep, index: int) -> dict:
     """Return a JSON-serialisable dict for pretty printing."""
     payload = {
@@ -57,8 +78,12 @@ async def _build_plan_from_page(
     semantic_dom = extract_semantic_dom(html)
     semantics_text = json.dumps(semantic_dom, indent=2)
     summary_text, _ = _interactive_summary(semantic_dom)
+    
+    # Include user info for the LLM to reference when filling forms
+    user_info_text = f"Available user information for form fields:\n{json.dumps(USER_INFO, indent=2)}\n\nUse these exact values when filling corresponding fields (e.g., first_name -> first name fields, email -> email fields, etc.)."
+    
     combined_context = "\n\n".join(
-        [text for text in (extra_context, summary_text) if text]
+        [text for text in (extra_context, user_info_text, summary_text) if text]
     ).strip()
     plan = generate_playwright_plan(
         semantics_text,
