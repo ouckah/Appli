@@ -13,7 +13,7 @@ from plan_executor import execute_plan_on_page
 # ===== Configurable constants =====
 URL = "https://careers.point72.com/CSJobDetail?jobName=software-engineer-2026-grad&jobCode=IVS-0013868&location=New+York&locale=English&retURL=/CSCareerSearch&utm_campaign=google_jobs_apply&utm_source=google_jobs_apply&utm_medium=organic"
 WAIT_UNTIL = "load"
-EXTRA_CONTEXT = "Prioritize remote-friendly roles."
+EXTRA_CONTEXT = "None. Do not add any additional context."
 EXECUTE_PLAN = True  # Set True to run the generated plan against a live page
 KEEP_BROWSER_OPEN = True  # Leave the browser window open after execution
 MAX_PLAN_ITERATIONS = 4  # Guardrail to avoid runaway loops
