@@ -13,11 +13,3 @@ def load_and_clean(url: str):
 
     close_browser(playwright, browser)
     return html
-
-def main():
-    url = "https://www.google.com"
-    html = load_and_clean(url)
-    print(html)
-
-if __name__ == "__main__":
-    main()
