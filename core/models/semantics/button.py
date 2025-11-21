@@ -24,7 +24,7 @@ class ButtonSemanticsModel(BaseSemanticsModel):
             prompt = f"Generate a semantic representation for the following button:\n{json.dumps(element, indent=2)}"
             
             try:
-                result_text = helpers.generate_text(prompt, SYSTEM_PROMPT)
+                result_text = self.call_llm(prompt, SYSTEM_PROMPT)
                 result_dict = json.loads(result_text)
             except json.JSONDecodeError:
                 result_dict = {
