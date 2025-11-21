@@ -77,7 +77,26 @@ def extract_semantic_dom(html: str):
                 if label_selector else None
             )
 
-        inputs.append({
+        # Detect custom dropdowns (readonly inputs, comboboxes, etc.)
+        readonly = tag.has_attr("readonly") or tag.has_attr("readOnly")
+        role = tag.get("role", "").lower()
+        aria_haspopup = tag.get("aria-haspopup", "").lower()
+        aria_expanded = tag.get("aria-expanded")
+        class_name = tag.get("class", [])
+        class_str = " ".join(class_name).lower() if isinstance(class_name, list) else (class_name or "").lower()
+        id_str = (tag.get("id") or "").lower()
+        
+        # Strong indicators of a custom dropdown
+        is_custom_dropdown = (
+            readonly or
+            role == "combobox" or
+            aria_haspopup in ("listbox", "menu", "true") or
+            aria_expanded is not None or
+            any(pattern in class_str for pattern in ["select", "dropdown", "picker", "combobox", "menu-trigger"]) or
+            any(pattern in id_str for pattern in ["select", "dropdown", "picker", "combobox"])
+        )
+
+        input_data = {
             "id": tag.get("id"),
             "name": field_name,
             "type": tag.get("type", "text"),
@@ -88,7 +107,18 @@ def extract_semantic_dom(html: str):
             "label_selector": label_selector,
             "label_xpath": label_xpath,
             "label_to_input": relationship,
-        })
+        }
+        
+        # Add dropdown detection metadata
+        if is_custom_dropdown:
+            input_data["is_dropdown"] = True
+            input_data["readonly"] = readonly
+            if role:
+                input_data["role"] = role
+            if aria_haspopup:
+                input_data["aria-haspopup"] = aria_haspopup
+
+        inputs.append(input_data)
 
     # ===== BUTTONS =====
     for tag in soup.find_all(["button", "a"]):

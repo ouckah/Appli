@@ -1,0 +1,75 @@
+{
+    "first_name": "John",
+    "last_name": "Doe",
+    "preferred_name": "John",
+    "name_pronunciation": "JON doe",
+  
+    "email": "john.doe@example.com",
+    "phone": "+1-555-555-5555",
+  
+    "street_address": "123 Main St",
+    "city": "New York",
+    "state": "NY",
+    "zip_code": "10001",
+    "location": "New York, NY",
+  
+    "citizenship": "United States",
+    "authorized_in_us": "Yes",
+    "require_future_sponsorship": "No",
+    "visa_sponsorship_needed": "No",
+    "work_authorization": "Authorized to work in the US",
+  
+    "over_18": "Yes",
+    "legal_age_confirmation": "Yes",
+  
+    "veteran_status": "I am not a protected veteran",
+    "disability_status": "No, I do not have a disability and have not had one in the past",
+    "gender": "Prefer not to say",
+    "race_ethnicity": "Prefer not to say",
+  
+    "school": "Rutgers University",
+    "degree": "Bachelor of Science in Computer Science",
+    "graduation_year": "2024",
+    "graduation_month": "May",
+    "gpa": "3.7",
+  
+    "current_title": "Software Engineer Intern",
+    "current_organization": "Current Company Inc.",
+    "about_me_short": "Software engineer with experience in distributed systems, automation, and backend development.",
+    "key_skills": [
+      "Python",
+      "TypeScript",
+      "Node.js",
+      "Kotlin",
+      "PostgreSQL",
+      "Playwright",
+      "AWS",
+      "Docker",
+      "gRPC",
+      "Machine Learning"
+    ],
+  
+    "employment_type": "Full-time",
+    "relocation": "Yes, open to relocation",
+    "remote_preference": "Open to remote, hybrid, or on-site",
+    "preferred_locations": [
+      "New York, NY",
+      "San Francisco, CA",
+      "Remote"
+    ],
+    "travel_preference": "Up to 20%",
+  
+    "desired_salary": "Open to market rate",
+    "desired_salary_number": "120000",
+  
+    "linkedin_url": "https://linkedin.com/in/johndoe",
+    "github_url": "https://github.com/johndoe",
+    "portfolio_url": "https://johndoe.dev",
+    "personal_website": "https://johndoe.dev",
+    "blog_url": null,
+    "twitter_url": null,
+  
+    "default_cover_letter_text": "I am passionate about scalable systems, backend engineering, and using software to solve real-world problems.",
+    "default_why_company": "I admire your mission to build impactful technology and believe my engineering background aligns strongly with this opportunity.",
+    "default_project_example": "One project I'm proud of is a distributed automation system that reduced processing time by 40%."
+  }
