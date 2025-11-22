@@ -17,6 +17,7 @@ For each element:
    - element_type (HTML tag type)
    - form_id (if part of a form)
    - aria_label (if present)
+   - required (true if the field must be filled to submit the form, false otherwise)
 4. Do NOT include the HTML code of the element in the output.
 5. For buttons, include button_type (Submit, Reset, Regular, etc.)
 6. For inputs, include input_type (text, hidden, checkbox, etc.)
