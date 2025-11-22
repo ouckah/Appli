@@ -1,5 +1,5 @@
-from . import DEFAULT_MODEL_NAME, DEFAULT_MAX_TOKENS
-import openai
+from core.models.client import client
+from .config import DEFAULT_MODEL_NAME, DEFAULT_MAX_TOKENS
 
 
 def generate_text(
@@ -22,7 +22,7 @@ def generate_text(
     Returns:
         The generated text from the assistant.
     """
-    response = openai.ChatCompletion.create(
+    response = client.chat.completions.create(
         model=model,
         messages=[
             {"role": "system", "content": system_prompt},
@@ -31,5 +31,4 @@ def generate_text(
         max_tokens=max_tokens
     )
     
-    message = response.choices[0].message
-    return message.get("content", "").strip() if message else ""
+    return response.choices[0].message.content
