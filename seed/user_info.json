@@ -3,6 +3,7 @@
     "last_name": "Doe",
     "preferred_name": "John",
     "name_pronunciation": "JON doe",
+    "resume_path": "seed/dummy_resume.pdf",
   
     "email": "john.doe@example.com",
     "phone": "+1-555-555-5555",
