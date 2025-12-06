@@ -4,4 +4,7 @@ version = "0.1.0"
 description = "Application Auto Applier"
 readme = "README.md"
 requires-python = ">=3.11"
-dependencies = []
+dependencies = [
+    "fastmcp>=2.13.1",
+    "mcp>=1.22.0",
+]
